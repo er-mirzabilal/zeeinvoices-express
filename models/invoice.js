@@ -36,6 +36,9 @@ const invoiceSchema = new mongoose.Schema(
     settings: {
       type: mongoose.Schema.Types.Mixed,
     },
+    notes: {
+      type: String,
+    },
     status: {
       type: String,
       default: invoiceStatus.PENDING,

@@ -70,6 +70,18 @@ exports.deleteSingle = async (req, res) => {
 };
 exports.create = async (req, res) => {
   const data = { ...req.body };
+  if (data?.from) {
+    data.from = JSON.parse(data?.from);
+  }
+  if (data?.to) {
+    data.to = JSON.parse(data?.to);
+  }
+  if (data?.settings) {
+    data.settings = JSON.parse(data?.settings);
+  }
+  if (data?.items) {
+    data.items = JSON.parse(data?.items);
+  }
   try {
     if (req.file && req.file.fieldname === "image") {
       data.image = await addOrUpdateOrDelete(

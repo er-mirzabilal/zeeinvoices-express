@@ -12,6 +12,7 @@ const invoiceRouter = require("./routes/invoice");
 const port = process.env.PORT || 3005;
 app.use(cors({ origin: "*" }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/invoices", invoiceRouter);
 app.use("/users", userRouter);

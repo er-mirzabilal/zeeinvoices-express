@@ -8,6 +8,7 @@ const invoiceSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+      default: "",
     },
     type: {
       type: String,

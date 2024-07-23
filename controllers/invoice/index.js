@@ -7,11 +7,11 @@ exports.getAll = async (req, res) => {
   const { page = 1, limit = 10, search = "" } = req.query; // Added search query
   const skip = (page - 1) * limit;
   try {
-    const records = await Service.findAll({}, search, {
+    const result = await Service.findAll({}, search, {
       skip,
       limit: Number(limit),
     });
-    handleResponse(res, 200, "All Records", records);
+    handleResponse(res, 200, "All Records", result);
   } catch (err) {
     handleError(res, err);
   }

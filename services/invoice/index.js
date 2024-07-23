@@ -5,7 +5,9 @@ class InvoiceService {
     return new Promise((resolve, reject) => {
       const pipeline = fetchAllInvoices(condition, search, options);
       Invoice.aggregate(pipeline)
-        .then((records) => {
+        .then((result) => {
+          const { totalRecords, invoices } = result[0];
+            resolve({ totalRecords, invoices });
           resolve(records);
         })
         .catch((err) => {

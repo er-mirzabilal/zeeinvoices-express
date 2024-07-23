@@ -87,8 +87,12 @@ exports.create = async (req, res) => {
 
 exports.getlastRecord = async (req, res) => {
   try {
+    let newId = 1;
     const record = await Service.lastRecord();
-    handleResponse(res, 200, "Last Record Id", record?.id || 0);
+    if (record) {
+      newId = record.id + 1;
+    }
+    handleResponse(res, 200, "Latest Id", newId);
   } catch (err) {
     handleError(res, err);
   }

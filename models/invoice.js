@@ -6,7 +6,7 @@ const invoiceSchema = new mongoose.Schema(
       type: String,
       required: "Invoice id is required",
     },
-    logo: {
+    image: {
       type: String,
     },
     type: {
@@ -21,7 +21,7 @@ const invoiceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
-    invoiceData: {
+    invoiceDate: {
       type: String,
       requried: "Invoice date is required",
     },

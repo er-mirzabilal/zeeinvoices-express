@@ -4,8 +4,13 @@ const { multerActions, multerSource } = require("../../utils/constant");
 const { handleError, handleResponse } = require("../../utils/responses");
 
 exports.getAll = async (req, res) => {
+  const { page = 1, limit = 10, search = "" } = req.query; // Added search query
+  const skip = (page - 1) * limit;
   try {
-    const records = await Service.findAll();
+    const records = await Service.findAll({}, search, {
+      skip,
+      limit: Number(limit),
+    });
     handleResponse(res, 200, "All Records", records);
   } catch (err) {
     handleError(res, err);

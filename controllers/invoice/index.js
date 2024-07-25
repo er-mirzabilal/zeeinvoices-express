@@ -31,6 +31,18 @@ exports.getSingle = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   const data = { ...req.body };
+  if (data?.from) {
+    data.from = JSON.parse(data?.from);
+  }
+  if (data?.to) {
+    data.to = JSON.parse(data?.to);
+  }
+  if (data?.settings) {
+    data.settings = JSON.parse(data?.settings);
+  }
+  if (data?.items) {
+    data.items = JSON.parse(data?.items);
+  }
   try {
     const oldRecord = await Service.findBy({ id });
     if (req.file && req.file.fieldname === "image") {
@@ -40,6 +52,17 @@ exports.update = async (req, res) => {
         req.file.filename,
         oldRecord.image
       );
+    }
+    if (data?.image === "no-image") {
+      if (oldRecord?.image) {
+        console.log("only remove image");
+        await addOrUpdateOrDelete(
+          multerActions.DELETE,
+          multerSource.INVOICES,
+          oldRecord.image
+        );
+      }
+      data.image = "";
     }
     const record = await Service.update({ id }, data);
     handleResponse(res, 200, "Record Updated", record);

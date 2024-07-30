@@ -1,13 +1,19 @@
 const Service = require("../../services/invoice");
 const { addOrUpdateOrDelete } = require("../../services/multer");
+const UserService = require("../../services/user");
 const { multerActions, multerSource } = require("../../utils/constant");
 const { handleError, handleResponse } = require("../../utils/responses");
 
 exports.getAll = async (req, res) => {
+  const user = req.user;
   const { page = 1, limit = 10, search = "" } = req.query; // Added search query
   const skip = (page - 1) * limit;
   try {
-    const result = await Service.findAll({}, search, {
+    const userFound = UserService.findBy({ email: user?.email });
+    if (!userFound) {
+      throw new Error("Invalid user.");
+    }
+    const result = await Service.findAll({ user_id: user?._id }, search, {
       skip,
       limit: Number(limit),
     });
@@ -92,6 +98,7 @@ exports.deleteSingle = async (req, res) => {
   }
 };
 exports.create = async (req, res) => {
+  const user = req.user;
   const data = { ...req.body };
   if (data?.from) {
     data.from = JSON.parse(data?.from);
@@ -106,6 +113,10 @@ exports.create = async (req, res) => {
     data.items = JSON.parse(data?.items);
   }
   try {
+    const userFound = UserService.findBy({ email: user?.email });
+    if (!userFound) {
+      throw new Error("Invalid user.");
+    }
     if (req.file && req.file.fieldname === "image") {
       data.image = await addOrUpdateOrDelete(
         multerActions.SAVE,
@@ -113,7 +124,7 @@ exports.create = async (req, res) => {
         req.file.path
       );
     }
-    const record = await Service.create(data);
+    const record = await Service.create({ ...data, user_id: user?._id });
     handleResponse(res, 200, "Record Created", record);
   } catch (err) {
     handleError(res, err);

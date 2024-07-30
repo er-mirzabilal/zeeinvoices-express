@@ -45,10 +45,10 @@ const invoiceSchema = new mongoose.Schema(
       type: String,
       default: invoiceStatus.PENDING,
     },
-    // user_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: "User reference is required",
-    // },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: "User reference is required",
+    },
   },
   { timestamps: true }
 );

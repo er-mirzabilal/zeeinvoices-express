@@ -10,9 +10,9 @@ const { upload } = require("../services/multer");
 const router = express.Router();
 
 router.get("/", getAll);
-router.get("/:id", getSingle);
-router.put("/:id", upload.single("image"), update);
+router.get("/my-profile", getMy);
+router.put("/my-profile", upload.single("image"), updateMyProfile);
 router.delete("/:id", deleteSingle);
-router.post("/save", create);
+router.post("/login", create);
 
 module.exports = router;

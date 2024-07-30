@@ -11,27 +11,30 @@ exports.getAll = async (req, res) => {
     handleError(res, err);
   }
 };
-exports.getSingle = async (req, res) => {
-  const { id } = req.params;
+exports.getMy = async (req, res) => {
+  const user = req.user;
   try {
-    if (!id) {
-      throw new Error("ID is required");
+    if (!user) {
+      throw new Error("Invalid user.");
     }
-    const record = await Service.findBy({ id });
-    handleResponse(res, 200, "Single Record", record);
+    const record = await Service.findBy({ email: user?.email });
+    handleResponse(res, 200, "Record", record);
   } catch (err) {
     handleError(res, err);
   }
 };
-exports.update = async (req, res) => {
-  const { id } = req.params;
+exports.updateMy = async (req, res) => {
+  const user = req.user;
   const data = { ...req.body };
   try {
-    const oldRecord = await Service.findBy({ id });
+    if (!user) {
+      throw new Error("Invlaid user.");
+    }
+    const oldRecord = await Service.findBy({ email: user?.email });
     if (req.file && req.file.fieldname === "image") {
       data.image = await addOrUpdateOrDelete(
         multerActions.PUT,
-        multerSource.INVOICES,
+        multerSource.USERS,
         req.file.filename,
         oldRecord.image
       );
@@ -42,33 +45,13 @@ exports.update = async (req, res) => {
     handleError(res, err);
   }
 };
-exports.deleteSingle = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const record = await Service.delete({ id });
-    if (
-      record &&
-      record.image &&
-      record.image?.startsWith("images/invoices/uploads")
-    ) {
-      await addOrUpdateOrDelete(
-        multerActions.DELETE,
-        multerSource.INVOICES,
-        record.image
-      );
-    }
 
-    handleResponse(res, 200, "Record Deleted", record);
+exports.create = async (req, res) => {
+  const data = { ...req.body };
+  try {
+    const record = await Service.create(data);
+    handleResponse(res, 200, "Record Created", record);
   } catch (err) {
     handleError(res, err);
   }
-};
-exports.create = async (req, res) => {
-    const data = { ...req.body };
-    try {
-      const record = await Service.create(data);
-      handleResponse(res, 200, "Record Created", record);
-    } catch (err) {
-      handleError(res, err);
-    }
 };

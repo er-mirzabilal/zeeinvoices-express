@@ -47,12 +47,9 @@ exports.updateMy = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const user = req.user;
-  const body = { ...req.body };
+  const data = { ...req.body };
   try {
-    const tokenData = { name: user.name, email: user.email };
-    const data = { ...tokenData, ...body };
-    const record = await Service.update({ email: tokenData?.email }, data);
+    const record = await Service.update({ email: data?.email }, data);
     handleResponse(res, 200, "Record Created", record);
   } catch (err) {
     handleError(res, err);

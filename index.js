@@ -8,6 +8,7 @@ const app = express();
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const invoiceRouter = require("./routes/invoice");
+const clientRouter = require("./routes/client");
 
 const port = process.env.PORT || 3005;
 app.use(cors({ origin: "*" }));
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/invoices", invoiceRouter);
+app.use("/clients", clientRouter);
 app.use("/users", userRouter);
 app.use("/", indexRouter);
 

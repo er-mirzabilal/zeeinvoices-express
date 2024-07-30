@@ -1,14 +1,14 @@
-const Invoice = require("../../models/invoice");
-const { fetchAllInvoices } = require("../../utils/pipelines");
-class InvoiceService {
+const Model = require("../../models/client");
+const { fetchAllClients } = require("../../utils/pipelines");
+class ClientService {
   static findAll(condition, search, options) {
     return new Promise((resolve, reject) => {
-      const pipeline = fetchAllInvoices(condition, search, options);
-      Invoice.aggregate(pipeline)
+      const pipeline = fetchAllClients(condition, search, options);
+      Model.aggregate(pipeline)
         .then((result) => {
-          const { totalRecords, invoices } = result[0];
-            resolve({ totalRecords, invoices });
-          // resolve(records);
+          const { totalRecords, clients } = result[0];
+          resolve({ totalRecords, clients });
+          //   resolve(records);
         })
         .catch((err) => {
           reject(err);
@@ -18,21 +18,7 @@ class InvoiceService {
 
   static findBy(data) {
     return new Promise((resolve, reject) => {
-      Invoice.findOne(data)
-        .then((record) => {
-          resolve(record);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  }
-
-  static lastRecord(data) {
-    return new Promise((resolve, reject) => {
-      Invoice.findOne(data)
-        .sort({ createdAt: -1 })
-        .exec()
+      Model.findOne(data)
         .then((record) => {
           resolve(record);
         })
@@ -44,7 +30,7 @@ class InvoiceService {
 
   static update(condition, data) {
     return new Promise((resolve, reject) => {
-      Invoice.findOneAndUpdate(condition, data, { new: true })
+      Model.findOneAndUpdate(condition, data, { new: true })
         .then((record) => {
           resolve(record);
         })
@@ -56,7 +42,7 @@ class InvoiceService {
 
   static delete(condition) {
     return new Promise((resolve, reject) => {
-      Invoice.findOneAndDelete(condition)
+      Model.findOneAndDelete(condition)
         .then((record) => {
           resolve(record);
         })
@@ -68,7 +54,7 @@ class InvoiceService {
 
   static count(condition) {
     return new Promise((resolve, reject) => {
-      Invoice.countDocuments(condition)
+      Model.countDocuments(condition)
         .then((count) => {
           resolve(count);
         })
@@ -80,7 +66,7 @@ class InvoiceService {
 
   static create(data) {
     return new Promise((resolve, reject) => {
-      Invoice.create(data)
+      Model.create(data)
         .then((record) => {
           resolve(record);
         })
@@ -91,4 +77,4 @@ class InvoiceService {
   }
 }
 
-module.exports = InvoiceService;
+module.exports = ClientService;

@@ -9,11 +9,11 @@ exports.getAll = async (req, res) => {
   const { page = 1, limit = 10, search = "" } = req.query; // Added search query
   const skip = (page - 1) * limit;
   try {
-    const userFound = UserService.findBy({ email: user?.email });
+    const userFound = await UserService.findBy({ email: user?.email });
     if (!userFound) {
       throw new Error("Invalid user.");
     }
-    const result = await Service.findAll({ user_id: user?._id }, search, {
+    const result = await Service.findAll({ user_id: userFound?._id }, search, {
       skip,
       limit: Number(limit),
     });
@@ -113,7 +113,7 @@ exports.create = async (req, res) => {
     data.items = JSON.parse(data?.items);
   }
   try {
-    const userFound = UserService.findBy({ email: user?.email });
+    const userFound = await UserService.findBy({ email: user?.email });
     if (!userFound) {
       throw new Error("Invalid user.");
     }
@@ -124,7 +124,8 @@ exports.create = async (req, res) => {
         req.file.path
       );
     }
-    const record = await Service.create({ ...data, user_id: user?._id });
+    console.log(user,'user',userFound);
+    const record = await Service.create({ ...data, user_id: userFound?._id });
     handleResponse(res, 200, "Record Created", record);
   } catch (err) {
     handleError(res, err);

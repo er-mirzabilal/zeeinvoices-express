@@ -27,7 +27,11 @@ class UserService {
 
   static update(condition, data) {
     return new Promise((resolve, reject) => {
-      User.findOneAndUpdate(condition, data, { new: true })
+      User.findOneAndUpdate(condition, data, {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      })
         .then((user) => {
           resolve(user);
         })

@@ -8,9 +8,9 @@ function authMiddleware(req, res, next) {
 
   const token = authHeader.split(" ")[1];
   verifyToken(token)
-    .then((payload) => {
-      if (payload) {
-        req.user = payload;
+    .then((tokenInfo) => {
+      if (tokenInfo) {
+        req.user = tokenInfo;
         next();
       } else {
         res.status(401).json({ error: "Invalid or expired token" });

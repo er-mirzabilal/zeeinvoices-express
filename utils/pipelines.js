@@ -78,7 +78,6 @@ exports.fetchAllClients = (condition, search, options) => {
               _id: 1,
               name: 1,
               email: 1,
-              from: 1,
               company_name: 1,
               phone_number: 1,
               city: 1,

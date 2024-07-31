@@ -27,10 +27,10 @@ const clientSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    // user_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   required: "User reference is required",
-    // },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: "User reference is required",
+    },
   },
   { timestamps: true }
 );

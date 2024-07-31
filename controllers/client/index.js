@@ -1,11 +1,17 @@
 const Service = require("../../services/client");
+const UserService = require("../../services/user");
 const { handleError, handleResponse } = require("../../utils/responses");
 
 exports.getAll = async (req, res) => {
+  const user = req.user;
   const { page = 1, limit = 10, search = "" } = req.query; // Added search query
   const skip = (page - 1) * limit;
   try {
-    const result = await Service.findAll({}, search, {
+    const userFound = await UserService.findBy({ email: user?.email });
+    if (!userFound) {
+      throw new Error("Invalid user.");
+    }
+    const result = await Service.findAll({ user_id: userFound?._id }, search, {
       skip,
       limit: Number(limit),
     });
@@ -46,9 +52,14 @@ exports.deleteSingle = async (req, res) => {
   }
 };
 exports.create = async (req, res) => {
+  const user = req.user;
   const data = { ...req.body };
   try {
-    const record = await Service.create(data);
+    const userFound = await UserService.findBy({ email: user?.email });
+    if (!userFound) {
+      throw new Error("Invalid user.");
+    }
+    const record = await Service.create({ ...data, user_id: userFound?._id });
     handleResponse(res, 200, "Record Created", record);
   } catch (err) {
     handleError(res, err);

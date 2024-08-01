@@ -39,7 +39,7 @@ exports.updateMy = async (req, res) => {
         oldRecord.image
       );
     }
-    const record = await Service.update({ id }, data);
+    const record = await Service.update({ email: user?.email }, data);
     handleResponse(res, 200, "Record Updated", record);
   } catch (err) {
     handleError(res, err);

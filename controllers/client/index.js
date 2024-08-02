@@ -62,6 +62,9 @@ exports.create = async (req, res) => {
     const record = await Service.create({ ...data, user_id: userFound?._id });
     handleResponse(res, 200, "Record Created", record);
   } catch (err) {
+    if (err.code === 11000) {
+      err.message = "Another client already exists with the same email.";
+    }
     handleError(res, err);
   }
 };

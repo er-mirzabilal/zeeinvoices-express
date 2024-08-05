@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/", authMiddleware, getAll);
 router.get("/last-record", getlastRecord);
-router.get("/:id", authMiddleware, getSingle);
+router.get("/:id", getSingle);
 router.put("/:id", authMiddleware, upload.single("image"), update);
 router.delete("/:id", authMiddleware, deleteSingle);
 router.post("/save", authMiddleware, upload.single("image"), create);

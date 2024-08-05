@@ -5,16 +5,15 @@ exports.fetchAllInvoices = (condition, search, options) => {
       $match: condition,
     },
 
-    // Match based on search term if provided
-    ...(search && search.trim() !== ""
-      ? [
-          {
-            $match: {
-              $or: [{ id: { $regex: search, $options: "i" } }],
-            },
+    ...(search
+    ? [
+        {
+          $match: {
+            $or: [{ id: search }],
           },
-        ]
-      : []),
+        },
+      ]
+    : []),
     {
       $facet: {
         totalRecords: [{ $count: "count" }],

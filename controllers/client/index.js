@@ -46,7 +46,7 @@ exports.deleteSingle = async (req, res) => {
   const { id } = req.params;
   try {
     const record = await Service.delete({ _id: id });
-    handleResponse(res, 200, "Record Deleted", record);
+    handleResponse(res, 200, "Client deleted successfully", record);
   } catch (err) {
     handleError(res, err);
   }
@@ -60,7 +60,7 @@ exports.create = async (req, res) => {
       throw new Error("Invalid user.");
     }
     const record = await Service.create({ ...data, user_id: userFound?._id });
-    handleResponse(res, 200, "Record Created", record);
+    handleResponse(res, 200, "Client is successfully saved", record);
   } catch (err) {
     if (err.code === 11000) {
       err.message = "Another client already exists with the same email.";

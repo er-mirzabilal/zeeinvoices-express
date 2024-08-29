@@ -92,7 +92,7 @@ exports.deleteSingle = async (req, res) => {
       );
     }
 
-    handleResponse(res, 200, "Record Deleted", record);
+    handleResponse(res, 200, "Invoice deleted successfully", record);
   } catch (err) {
     handleError(res, err);
   }
@@ -126,7 +126,7 @@ exports.create = async (req, res) => {
     }
     console.log(user,'user',userFound);
     const record = await Service.create({ ...data, user_id: userFound?._id });
-    handleResponse(res, 200, "Record Created", record);
+    handleResponse(res, 200, "Your invoice is successfully saved", record);
   } catch (err) {
     handleError(res, err);
   }

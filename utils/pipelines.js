@@ -14,6 +14,7 @@ exports.fetchAllInvoices = (condition, search, options) => {
         },
       ]
     : []),
+    { $sort: { id: -1 } },
     {
       $facet: {
         totalRecords: [{ $count: "count" }],
@@ -35,7 +36,6 @@ exports.fetchAllInvoices = (condition, search, options) => {
           },
           { $skip: options.skip },
           { $limit: options.limit },
-          { $sort: { id: -1 } },
         ],
       },
     },
@@ -68,6 +68,7 @@ exports.fetchAllClients = (condition, search, options) => {
           },
         ]
       : []),
+    { $sort: { _id: -1 } },
     {
       $facet: {
         totalRecords: [{ $count: "count" }],
@@ -86,7 +87,6 @@ exports.fetchAllClients = (condition, search, options) => {
           },
           { $skip: options.skip },
           { $limit: options.limit },
-          { $sort: { _id: -1 } },
         ],
       },
     },

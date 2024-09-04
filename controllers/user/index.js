@@ -49,12 +49,14 @@ exports.updateMy = async (req, res) => {
 exports.create = async (req, res) => {
   const data = { ...req.body };
   try {
+    console.log(data.email,'data');
     const recordFound = await Service.findBy({ email: data?.email });
+    console.log(recordFound,'record');
     if (!recordFound) {
-      const record = await Service.update({ email: data?.email }, data);
+      const record = await Service.create(data);
       handleResponse(res, 200, "Record Created", record);
     } else {
-      handleResponse(res, 200, "Record Found", record);
+      handleResponse(res, 200, "Record Found", recordFound);
     }
   } catch (err) {
     handleError(res, err);

@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-async function verifyToken(token) {
+async function verifyToken(token, OAuthClientID) {
   try {
     const response = await axios.get(
       "https://www.googleapis.com/oauth2/v1/tokeninfo",
@@ -15,7 +15,7 @@ async function verifyToken(token) {
     }
 
     // Optionally, verify that the token is intended for your application
-    if (response.data.audience !== process.env.GOOGLE_CLIENT_ID) {
+    if (response.data.audience !== OAuthClientID) {
       console.error("Token not intended for this application");
       return null;
     }

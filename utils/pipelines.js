@@ -84,6 +84,12 @@ exports.fetchAllInvoices = (condition, search, options) => {
 };
 
 exports.fetchAllClients = (condition, search, options) => {
+  const paginationPipeline = options.skip !== undefined && options.limit !== undefined
+    ? [
+        { $skip: options.skip },
+        { $limit: options.limit },
+      ]
+    : [];
   return [
     // Match the specific condition
     {
@@ -120,8 +126,7 @@ exports.fetchAllClients = (condition, search, options) => {
               address: 1,
             },
           },
-          { $skip: options.skip },
-          { $limit: options.limit },
+          ...paginationPipeline,
         ],
       },
     },

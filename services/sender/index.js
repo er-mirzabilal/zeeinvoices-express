@@ -1,7 +1,7 @@
 const Model = require("../../models/sender");
 const { fetchAllSenders } = require("../../utils/pipelines");
 class SenderService {
-  static findAll(condition, search, options) {
+  static findAll(condition, search = null, options = {}) {
     return new Promise((resolve, reject) => {
       const pipeline = fetchAllSenders(condition, search, options);
       Model.aggregate(pipeline)

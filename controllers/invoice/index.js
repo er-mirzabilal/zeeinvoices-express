@@ -1,6 +1,8 @@
 const Service = require("../../services/invoice");
 const { addOrUpdateOrDelete } = require("../../services/multer");
 const UserService = require("../../services/user");
+const SenderService = require("../../services/sender");
+const ClientService = require("../../services/client");
 const { multerActions, multerSource } = require("../../utils/constant");
 const { handleError, handleResponse } = require("../../utils/responses");
 
@@ -100,11 +102,14 @@ exports.deleteSingle = async (req, res) => {
 exports.create = async (req, res) => {
   const user = req.user;
   const data = { ...req.body };
-  if (data?.from) {
-    data.from = JSON.parse(data?.from);
+  let newTo = null; //sender
+  let newFrom = null; //receiver
+
+  if (!data?.from) {
+    newFrom = JSON.parse(data?.newFrom);
   }
-  if (data?.to) {
-    data.to = JSON.parse(data?.to);
+  if (!data?.to) {
+    newTo = JSON.parse(data?.newTo);
   }
   if (data?.settings) {
     data.settings = JSON.parse(data?.settings);
@@ -117,6 +122,42 @@ exports.create = async (req, res) => {
     if (!userFound) {
       throw new Error("Invalid user.");
     }
+
+    if(newFrom){
+      let senderDetails = await SenderService.findBy({ email: newFrom.email , user_id: userFound._id });
+      if(senderDetails){
+        delete newFrom.email;
+        delete newFrom.user_id;
+        delete newFrom._id;
+        senderDetails = senderDetails.toObject();
+        senderDetails = { ...senderDetails, ...newFrom };
+        await SenderService.update({ _id: senderDetails._id } , senderDetails);
+        data.from = senderDetails._id;
+      }else{
+        newFrom = {...newFrom , user_id: userFound._id };
+        let senderDetails = await SenderService.create(newFrom);
+        data.from = senderDetails._id;
+      }
+    }
+    
+    if(newTo){
+      let receiverDetails = await ClientService.findBy({ email: newTo.email , user_id: userFound._id });
+      if(receiverDetails){
+        delete newTo.email;
+        delete newTo.user_id;
+        delete newTo._id;
+        receiverDetails = receiverDetails.toObject();
+        receiverDetails = { ...receiverDetails, ...newTo };
+        await ClientService.update({ _id: receiverDetails._id } , receiverDetails);
+        data.to = receiverDetails._id;
+      }else{
+        newTo = {...newTo , user_id: userFound._id };
+        let receiverDetails = await ClientService.create(newTo);
+        data.to = receiverDetails._id;
+      }
+    }
+    
+
     if (req.file && req.file.fieldname === "image") {
       data.image = await addOrUpdateOrDelete(
         multerActions.SAVE,
@@ -126,12 +167,13 @@ exports.create = async (req, res) => {
     }
     
     const lastRecord = await Service.lastRecord();
-    if(lastRecord && lastRecord?.id == data.id){
+    if(lastRecord && lastRecord?.id >= data.id){
       data.id = lastRecord.id + 1;
     }
     const record = await Service.create({ ...data, user_id: userFound?._id });
     handleResponse(res, 200, "Your invoice is successfully saved", record);
   } catch (err) {
+    
     if (err.code === 11000) {
       let retryCount = req.retryCount || 0;
       if (retryCount < 3) {  // retry limit

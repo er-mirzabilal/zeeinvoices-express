@@ -20,6 +20,20 @@ exports.getAll = async (req, res) => {
     handleError(res, err);
   }
 };
+
+exports.getAllData = async (req, res) => {
+  const user = req.user;
+  try {
+    const userFound = await UserService.findBy({ email: user?.email });
+    if (!userFound) {
+      throw new Error("Invalid Loggedin user.");
+    }
+    const result = await Service.findAll({ user_id: userFound?._id });
+    handleResponse(res, 200, "All Records", result);
+  } catch (err) {
+    handleError(res, err);
+  }
+};
 exports.getSingle = async (req, res) => {
   const { id } = req.params;
   const user = req.user;

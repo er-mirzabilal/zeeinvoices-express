@@ -14,6 +14,39 @@ exports.fetchAllInvoices = (condition, search, options) => {
         },
       ]
     : []),
+
+     // Join with the `Client` or `Sender` collection for the `from` field
+     {
+      $lookup: {
+        from: 'senders', // Replace with your actual collection name for clients/senders
+        localField: 'from',
+        foreignField: '_id',
+        as: 'fromDetails',
+      },
+    },
+    {
+      $unwind: {
+        path: '$fromDetails',
+        preserveNullAndEmptyArrays: true, // In case there's no matching document
+      },
+    },
+
+    // Join with the `Client` or `Sender` collection for the `to` field
+    {
+      $lookup: {
+        from: 'clients', // Replace with the collection name for clients
+        localField: 'to',
+        foreignField: '_id',
+        as: 'toDetails',
+      },
+    },
+    {
+      $unwind: {
+        path: '$toDetails',
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+
     { $sort: { id: -1 } },
     {
       $facet: {
@@ -32,6 +65,8 @@ exports.fetchAllInvoices = (condition, search, options) => {
               settings: 1,
               notes: 1,
               status: 1,
+              fromDetails: { $ifNull: ['$fromDetails', null] },
+              toDetails: { $ifNull: ['$toDetails', null] }, 
             },
           },
           { $skip: options.skip },
@@ -49,6 +84,12 @@ exports.fetchAllInvoices = (condition, search, options) => {
 };
 
 exports.fetchAllClients = (condition, search, options) => {
+  const paginationPipeline = options.skip !== undefined && options.limit !== undefined
+    ? [
+        { $skip: options.skip },
+        { $limit: options.limit },
+      ]
+    : [];
   return [
     // Match the specific condition
     {
@@ -85,8 +126,7 @@ exports.fetchAllClients = (condition, search, options) => {
               address: 1,
             },
           },
-          { $skip: options.skip },
-          { $limit: options.limit },
+          ...paginationPipeline,
         ],
       },
     },
@@ -100,6 +140,12 @@ exports.fetchAllClients = (condition, search, options) => {
 };
 
 exports.fetchAllSenders = (condition, search, options) => {
+  const paginationPipeline = options.skip !== undefined && options.limit !== undefined
+    ? [
+        { $skip: options.skip },
+        { $limit: options.limit },
+      ]
+    : [];
   return [
     // Match the specific condition
     {
@@ -136,8 +182,7 @@ exports.fetchAllSenders = (condition, search, options) => {
               address: 1,
             },
           },
-          { $skip: options.skip },
-          { $limit: options.limit },
+          ...paginationPipeline,
         ],
       },
     },

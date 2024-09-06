@@ -16,12 +16,14 @@ const invoiceSchema = new mongoose.Schema(
       required: "Invoice type is required",
     },
     from: {
-      type: mongoose.Schema.Types.Mixed,
-      default: {},
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "senders",
+      required: "Sender field is required",
     },
     to: {
-      type: mongoose.Schema.Types.Mixed,
-      default: {},
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "clients",  // Defining relation with Sender document
+      required: "Client field is required",
     },
     invoiceDate: {
       type: String,

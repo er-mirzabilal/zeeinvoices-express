@@ -4,6 +4,7 @@ class InvoiceService {
   static findAll(condition, search, options) {
     return new Promise((resolve, reject) => {
       const pipeline = fetchAllInvoices(condition, Number(search), options);
+      console.log(pipeline)
       Invoice.aggregate(pipeline)
         .then((result) => {
           const { totalRecords, invoices } = result[0];

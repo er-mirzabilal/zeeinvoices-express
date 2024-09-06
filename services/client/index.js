@@ -1,7 +1,7 @@
 const Model = require("../../models/client");
 const { fetchAllClients } = require("../../utils/pipelines");
 class ClientService {
-  static findAll(condition, search, options) {
+  static findAll(condition, search = null, options = {}) {
     return new Promise((resolve, reject) => {
       const pipeline = fetchAllClients(condition, search, options);
       Model.aggregate(pipeline)

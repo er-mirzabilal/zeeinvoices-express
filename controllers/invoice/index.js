@@ -25,12 +25,13 @@ exports.getAll = async (req, res) => {
   }
 };
 exports.getSingle = async (req, res) => {
-  const { id } = req.params;
+  let { id } = req.params;
   try {
     if (!id) {
       throw new Error("ID is required");
     }
-    const record = await Service.findBy({ id });
+    id = parseInt(id);
+    const record = await Service.findBy({ id: id });
     handleResponse(res, 200, "Single Record", record);
   } catch (err) {
     handleError(res, err);

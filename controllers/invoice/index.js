@@ -40,12 +40,12 @@ exports.getSingle = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   const data = { ...req.body };
-  if (data?.from) {
-    data.from = JSON.parse(data?.from);
-  }
-  if (data?.to) {
-    data.to = JSON.parse(data?.to);
-  }
+  // if (data?.from) {
+  //   data.from = JSON.parse(data?.from);
+  // }
+  // if (data?.to) {
+  //   data.to = JSON.parse(data?.to);
+  // }
   if (data?.settings) {
     data.settings = JSON.parse(data?.settings);
   }

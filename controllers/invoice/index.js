@@ -25,12 +25,13 @@ exports.getAll = async (req, res) => {
   }
 };
 exports.getSingle = async (req, res) => {
-  const { id } = req.params;
+  let { id } = req.params;
   try {
     if (!id) {
       throw new Error("ID is required");
     }
-    const record = await Service.findBy({ id });
+    id = parseInt(id);
+    const record = await Service.findBy({ id: id });
     handleResponse(res, 200, "Single Record", record);
   } catch (err) {
     handleError(res, err);
@@ -39,12 +40,12 @@ exports.getSingle = async (req, res) => {
 exports.update = async (req, res) => {
   const { id } = req.params;
   const data = { ...req.body };
-  if (data?.from) {
-    data.from = JSON.parse(data?.from);
-  }
-  if (data?.to) {
-    data.to = JSON.parse(data?.to);
-  }
+  // if (data?.from) {
+  //   data.from = JSON.parse(data?.from);
+  // }
+  // if (data?.to) {
+  //   data.to = JSON.parse(data?.to);
+  // }
   if (data?.settings) {
     data.settings = JSON.parse(data?.settings);
   }

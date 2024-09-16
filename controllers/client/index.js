@@ -1,5 +1,6 @@
 const Service = require("../../services/client");
 const UserService = require("../../services/user");
+const InvoiceService = require("../../services/invoice");
 const { handleError, handleResponse } = require("../../utils/responses");
 
 exports.getAll = async (req, res) => {
@@ -60,6 +61,14 @@ exports.update = async (req, res) => {
 exports.deleteSingle = async (req, res) => {
   const { id } = req.params;
   try {
+
+    const invoiceExists = await InvoiceService.count({ to: id });
+    console.log("invoiceExists" , invoiceExists)
+    if (invoiceExists) {
+      // If record exists in the Invoice table, return an error
+      return handleResponse(res, 400, "Cannot delete client. It is referenced in invoices.");
+    }
+
     const record = await Service.delete({ _id: id });
     handleResponse(res, 200, "Client deleted successfully", record);
   } catch (err) {

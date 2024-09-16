@@ -5,18 +5,8 @@ exports.fetchAllInvoices = (condition, search, options) => {
       $match: condition,
     },
 
-    ...(search
-    ? [
-        {
-          $match: {
-            $or: [{ id: search }],
-          },
-        },
-      ]
-    : []),
-
-     // Join with the `Client` or `Sender` collection for the `from` field
-     {
+    // Join with the `Client` or `Sender` collection for the `from` field
+    {
       $lookup: {
         from: 'senders', // Replace with your actual collection name for clients/senders
         localField: 'from',
@@ -46,7 +36,19 @@ exports.fetchAllInvoices = (condition, search, options) => {
         preserveNullAndEmptyArrays: true,
       },
     },
-
+    ...(search
+      ? [
+          {
+            $match: {
+              $or: [
+                { id: !isNaN(Number(search)) ? Number(search) : null }, // Search by invoice ID
+                { 'toDetails.name': { $regex: search, $options: 'i' } }, // Search by client name
+              ],
+            },
+          },
+        ]
+      : 
+    [] ),
     { $sort: { id: -1 } },
     {
       $facet: {

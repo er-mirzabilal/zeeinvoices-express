@@ -63,9 +63,7 @@ exports.deleteSingle = async (req, res) => {
   try {
 
     const invoiceExists = await InvoiceService.count({ to: id });
-    console.log("invoiceExists" , invoiceExists)
     if (invoiceExists) {
-      // If record exists in the Invoice table, return an error
       return handleResponse(res, 400, "Cannot delete client. It is referenced in invoices.");
     }
 

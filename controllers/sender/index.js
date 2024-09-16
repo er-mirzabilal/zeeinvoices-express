@@ -1,5 +1,6 @@
 const Service = require("../../services/sender");
 const UserService = require("../../services/user");
+const InvoiceService = require("../../services/invoice");
 const { handleError, handleResponse } = require("../../utils/responses");
 
 exports.getAll = async (req, res) => {
@@ -82,6 +83,12 @@ exports.deleteSingle = async (req, res) => {
     if (!userFound) {
       throw new Error("Invalid Loggedin user.");
     }
+    
+    const invoiceExists = await InvoiceService.count({ from: id });
+    if (invoiceExists) {
+      return handleResponse(res, 400, "Cannot delete sender. It is referenced in invoices.");
+    }
+    
     const record = await Service.delete({ _id: id , user_id: userFound?._id });
     handleResponse(res, 200, "Sender deleted successfully", record);
   } catch (err) {

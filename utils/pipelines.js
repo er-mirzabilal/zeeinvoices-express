@@ -78,7 +78,7 @@ exports.fetchAllInvoices = (condition, search, options) => {
     },
     {
       $project: {
-        totalRecords: { $arrayElemAt: ["$totalRecords.count", 0] },
+        totalRecords: { $ifNull: [{ $arrayElemAt: ["$totalRecords.count", 0] }, 0]  },
         invoices: 1,
       },
     },

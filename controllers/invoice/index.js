@@ -76,6 +76,9 @@ exports.update = async (req, res) => {
     const record = await Service.update({ _id:id }, data);
     handleResponse(res, 200, "Record Updated", record);
   } catch (err) {
+    if (err.code === 11000) {
+      err.message = "Another invoice already exist with same reference.";
+    }
     handleError(res, err);
   }
 };
@@ -184,6 +187,9 @@ exports.create = async (req, res) => {
     //     handleError(res, err);
     //   }
     // } else {
+      if (err.code === 11000) {
+        err.message = "Another invoice already exist with same reference.";
+      }
       handleError(res, err);
     // }
   }

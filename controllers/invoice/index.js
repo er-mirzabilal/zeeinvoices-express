@@ -30,7 +30,7 @@ exports.getSingle = async (req, res) => {
     if (!id) {
       throw new Error("ID is required");
     }
-    id = parseInt(id);
+    // id = parseInt(id);
     const record = await Service.findBy({ id: id });
     handleResponse(res, 200, "Single Record", record);
   } catch (err) {
@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
     data.items = JSON.parse(data?.items);
   }
   try {
-    const oldRecord = await Service.findBy({ id });
+    const oldRecord = await Service.findBy({ _id:id });
     if (req.file && req.file.fieldname === "image") {
       data.image = await addOrUpdateOrDelete(
         multerActions.PUT,
@@ -73,7 +73,7 @@ exports.update = async (req, res) => {
       }
       data.image = "";
     }
-    const record = await Service.update({ id }, data);
+    const record = await Service.update({ _id:id }, data);
     handleResponse(res, 200, "Record Updated", record);
   } catch (err) {
     handleError(res, err);
@@ -167,25 +167,25 @@ exports.create = async (req, res) => {
       );
     }
     
-    const lastRecord = await Service.lastRecord();
-    if(lastRecord && lastRecord?.id >= data.id){
-      data.id = lastRecord.id + 1;
-    }
+    // const lastRecord = await Service.lastRecord();
+    // if(lastRecord && lastRecord?.id >= data.id){
+    //   data.id = lastRecord.id + 1;
+    // }
     const record = await Service.create({ ...data, user_id: userFound?._id });
     handleResponse(res, 200, "Your invoice is successfully saved", record);
   } catch (err) {
     
-    if (err.code === 11000) {
-      let retryCount = req.retryCount || 0;
-      if (retryCount < 3) {  // retry limit
-        req.retryCount = retryCount + 1;
-        return exports.create(req, res);  // Retry by calling the same function
-      } else {
-        handleError(res, err);
-      }
-    } else {
+    // if (err.code === 11000) {
+    //   let retryCount = req.retryCount || 0;
+    //   if (retryCount < 3) {  // retry limit
+    //     req.retryCount = retryCount + 1;
+    //     return exports.create(req, res);  // Retry by calling the same function
+    //   } else {
+    //     handleError(res, err);
+    //   }
+    // } else {
       handleError(res, err);
-    }
+    // }
   }
 };
 

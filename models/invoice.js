@@ -3,7 +3,7 @@ const { invoiceStatus } = require("../utils/constant");
 const invoiceSchema = new mongoose.Schema(
   {
     id: {
-      type: Number,
+      type: String,
       required: "Invoice id is required",
       unique: true,
     },

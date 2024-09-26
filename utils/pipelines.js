@@ -36,12 +36,12 @@ exports.fetchAllInvoices = (condition, search, options) => {
         preserveNullAndEmptyArrays: true,
       },
     },
-    ...(search
+    ...(search && search.trim() !== ""
       ? [
           {
             $match: {
               $or: [
-                { id: !isNaN(Number(search)) ? Number(search) : null }, // Search by invoice ID
+                { id: { $regex: search, $options: "i" } }, // Search by invoice ID
                 { 'toDetails.name': { $regex: search, $options: 'i' } }, // Search by client name
               ],
             },
